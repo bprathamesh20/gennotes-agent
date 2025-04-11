@@ -1,0 +1,8 @@
+fastapi
+uvicorn[standard]
+agno-ai
+python-dotenv
+requests
+google-generativeai
+duckduckgo-search
+crawl4ai
