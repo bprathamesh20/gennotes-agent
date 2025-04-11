@@ -1,8 +1,8 @@
 fastapi
 uvicorn[standard]
-agno-ai
+agno
 python-dotenv
 requests
-google-generativeai
+google-genai
 duckduckgo-search
 crawl4ai
