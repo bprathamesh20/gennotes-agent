@@ -5,7 +5,7 @@ from pydantic import BaseModel
 from pydantic import BaseModel
 from agno.agent import Agent
 import os
-from typing import List
+from typing import List, Any # Import Any
 import requests
 from agno.models.google import Gemini
 from textwrap import dedent
@@ -22,9 +22,10 @@ load_dotenv()
 class RequestData(BaseModel):
     content: str
 
-# Define the response body model for HTML content
+# Define the response body model for HTML content and messages
 class HtmlResponse(BaseModel):
     html_content: str
+    messages: List[Any] # Allow any type for messages
 
 # --- Agent Setup Logic (Moved from agent.py) ---
 
@@ -130,6 +131,7 @@ app = FastAPI()
 
 origins = [
     "http://localhost:3000", # Your frontend origin
+    "http://localhost:3001", # Added origin from user feedback
     # Add any other origins if needed
 ]
 
@@ -159,7 +161,13 @@ async def generate_notes(request: Request):
         try:
             response = agent.run(content)
             print()
-            return {"html_content": response.content}
+            # Manually create a serializable list of messages
+            serializable_messages = [
+                {"role": msg.role, "content": msg.content}
+                for msg in agent.memory.messages
+                if hasattr(msg, 'role') and hasattr(msg, 'content') # Ensure messages have expected attributes
+            ]
+            return {"html_content": response.content, "messages": serializable_messages}
         except Exception as e:
             # Log the error server-side
             print(f"Error during agent execution: {e}")
