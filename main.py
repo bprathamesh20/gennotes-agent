@@ -132,6 +132,7 @@ app = FastAPI()
 origins = [
     "http://localhost:3000", # Your frontend origin
     "http://localhost:3001", # Added origin from user feedback
+    "https://gennotes-frontend.vercel.app", # Allow frontend origin
     # Add any other origins if needed
 ]
 
